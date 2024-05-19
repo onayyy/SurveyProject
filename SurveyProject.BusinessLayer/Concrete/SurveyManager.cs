@@ -23,6 +23,10 @@ namespace SurveyProject.BusinessLayer.Concrete
         {
             return _surveyDal.GetSurveyWithOptionsAsync();
         }
+        public Task<Survey> TGetSurveyWithOptionsByIdAsync(int surveyId)
+        {
+            return _surveyDal.GetSurveyWithOptionsByIdAsync(surveyId);
+        }
 
         public async Task TDelete(int id)
         {
@@ -52,6 +56,16 @@ namespace SurveyProject.BusinessLayer.Concrete
         public async Task TUpdate(Survey entity)
         {
             await _surveyDal.Update(entity);
+        }
+
+        public async Task<List<Option>> TGetVotesBySurveyId(int surveyId)
+        {
+            return await _surveyDal.GetVotesBySurveyId(surveyId);
+        }
+
+        public async Task<Survey> GetSurveyById(int id)
+        {
+            return await _surveyDal.GetSurveyById(id);
         }
     }
 }

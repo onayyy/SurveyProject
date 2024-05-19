@@ -13,8 +13,8 @@ using SurveyProject.EntityLayer.Concrete;
 namespace SurveyProject.DataAccessLayer.Migrations
 {
     [DbContext(typeof(SurveyContext))]
-    [Migration("20240516103236_mig1")]
-    partial class mig1
+    [Migration("20240518180205_mig2")]
+    partial class mig2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

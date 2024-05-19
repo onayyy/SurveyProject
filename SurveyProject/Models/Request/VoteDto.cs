@@ -1,11 +1,17 @@
-﻿namespace SurveyProject.WebApi.Models.Request
+﻿
+using SurveyProject.EntityLayer.Concrete;
+
+namespace SurveyProject.WebApi.Models.Request
 {
-    public class VoteDto
+    public class VoteDtoRequest
     {
-        public int Id { get; set; }
 
         public int SurveyId { get; set; }
 
         public string User { get; set; }
+        public List<int> OptionIds { get; set; }
+
+        //public List<VoteOptionDto> Options { get; set; }
+
     }
 }

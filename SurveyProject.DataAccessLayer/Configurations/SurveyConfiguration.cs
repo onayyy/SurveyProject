@@ -15,7 +15,7 @@ namespace SurveyProject.DataAccessLayer.Configurations
         {
             builder.ToTable("survey");
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasColumnName("id").HasColumnType("int");
+            builder.Property(x => x.Id).HasColumnName("id").HasColumnType("int").ValueGeneratedOnAdd();
             builder.Property(x => x.Question).HasColumnName("question").HasColumnType("text");
             builder.Property(x => x.CreatedDate).HasColumnName("created_date").HasColumnType("date");
             builder.Property(x => x.CreatedBy).HasColumnName("created_by").HasColumnType("varchar(50)");

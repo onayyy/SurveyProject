@@ -17,6 +17,12 @@ namespace SurveyProject.DataAccessLayer.EntityFramework
         {
         }
 
+        public async Task<Survey> GetSurveyById(int id)
+        {
+            await using var context = new SurveyContext();
+            return await context.Surveys.Where(x => x.Id == id).Include(x => x.Options).FirstOrDefaultAsync();
+        }
+
         public int GetSurveyCount()
         {
             var context = new SurveyContext();
@@ -28,6 +34,18 @@ namespace SurveyProject.DataAccessLayer.EntityFramework
         {
             await using var context = new SurveyContext();
             return context.Surveys.Include(x => x.Options).ToList();
+        }
+
+        public async Task<Survey> GetSurveyWithOptionsByIdAsync(int surveyId)
+        {
+            await using var context = new SurveyContext();
+            return context.Surveys.Where(x => x.Id == surveyId).Include(x => x.Options).Include(x=>x.Votes).FirstOrDefault();
+        }
+
+        public async Task<List<Option>> GetVotesBySurveyId(int surveyId)
+        {
+            await using var context = new SurveyContext();
+            return context.Options.Where(x => x.Survey.Id == surveyId).Include(x => x.Votes).ToList();
         }
     }
 }

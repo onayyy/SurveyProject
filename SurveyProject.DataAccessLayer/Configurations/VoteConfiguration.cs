@@ -15,10 +15,13 @@ namespace SurveyProject.DataAccessLayer.Configurations
         {
             builder.ToTable("vote");
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).HasColumnName("id").HasColumnType("int");
+            builder.Property(x => x.Id).HasColumnName("id").HasColumnType("int").ValueGeneratedOnAdd();
             builder.Property(x => x.User).HasColumnName("user").HasColumnType("varchar(50)");
 
-            builder.HasOne(x => x.Survey).WithMany(x => x.Votes);
+            builder.HasOne(x => x.Survey)
+            .WithMany(x => x.Votes)
+            .HasForeignKey(x => x.SurveyId); // SurveyId'ye göre ilişki kuruyoruz.
+
             builder.HasMany(x => x.Options).WithMany(x => x.Votes);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using SurveyProject.BusinessLayer.Abstract;
 using SurveyProject.DataAccessLayer.Context;
 using SurveyProject.EntityLayer.Concrete;
@@ -19,10 +20,23 @@ namespace SurveyProject.WebApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Survey()
+        public async Task<IActionResult> Survey()
         {
-            var values = _surveyService.TGetSurveyWithOptionsAsync();
+            var values = await _surveyService.TGetSurveyWithOptionsAsync();
             return Ok(values);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Survey(int id)
+        {
+            var survey = await _surveyService.GetSurveyById(id);
+
+            if (survey == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(survey);
         }
 
         [HttpPost]
@@ -49,34 +63,39 @@ namespace SurveyProject.WebApi.Controllers
             return Ok("Anket Başarıyla Oluşturuldu.");
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _surveyService.TDelete(id);
             return Ok("Anket Başarıyla Silindi."); 
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update([FromBody] SurveyCreateRequest request)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromBody] SurveyUpdateRequest request, int id)
         {
-            var options = request.Options.Select(x => new Option
+            var survey = await _surveyService.TGetSurveyWithOptionsByIdAsync(id);
+            if (survey == null)
             {
-                Id = x.Id,
-                Description = x.Description,
-                Type = x.Type,
-                Order = x.Order
-            }).ToList();
+                return NotFound();
+            }
 
-            var survey = new Survey
+            if (request.Options != null && request.Options.Count > 0)
             {
-                Id = request.Id,
-                CreatedBy = request.CreatedBy,
-                Options = options,
-                Question = request.Question,
-                CreatedDate = DateTime.Now,
-                DueDate = DateTime.Now.AddDays(1),
-                Setting = request.Settings
-            };
+                var options = request.Options.Select(x => new Option
+                {
+                    Id = x.Id,
+                    Description = x.Description,
+                    Type = x.Type,
+                    Order = x.Order
+                }).ToList();
+
+                survey.Options = options;
+            }
+
+            if (!string.IsNullOrEmpty(request.Question))
+            {
+                survey.Question = request.Question;
+            }
 
             await _surveyService.TUpdate(survey);
             return Ok("Anket Başarıyla Güncellendi");
